@@ -205,7 +205,8 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h3><i class="fas fa-bolt"></i> Aplikasi Pembayaran Listrik</h3>
+            <p><i class="fas fa-bolt-lightning fa-4x"></i></p>
+            <h3>Aplikasi Pembayaran Listrik</h3>
             <p>Silakan login untuk melanjutkan</p>
         </div>
         <div class="login-body">
