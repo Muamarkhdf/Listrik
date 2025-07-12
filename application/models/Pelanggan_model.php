@@ -7,12 +7,26 @@ class Pelanggan_model extends CI_Model {
         parent::__construct();
     }
     
-    // Get all pelanggan with level info
-    public function get_all_pelanggan() {
+    // Get all pelanggan with level info, support search & sort
+    public function get_all_pelanggan($search = '', $sort = '', $order = '') {
         $this->db->select('pelanggan.*, level.daya, level.tarif_per_kwh, users.username, users.nama as nama_user');
         $this->db->from('pelanggan');
         $this->db->join('level', 'level.level_id = pelanggan.level_id');
         $this->db->join('users', 'users.user_id = pelanggan.user_id', 'left');
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like('pelanggan.nama', $search);
+            $this->db->or_like('pelanggan.alamat', $search);
+            $this->db->or_like('users.username', $search);
+            $this->db->group_end();
+        }
+        $allowed_sort = ['nama', 'alamat', 'daya', 'tarif_per_kwh'];
+        if (in_array($sort, $allowed_sort)) {
+            $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+            $this->db->order_by($sort, $order);
+        } else {
+            $this->db->order_by('pelanggan.nama', 'asc');
+        }
         return $this->db->get()->result();
     }
     

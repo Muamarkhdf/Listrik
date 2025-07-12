@@ -7,13 +7,28 @@ class Tagihan_model extends CI_Model {
         parent::__construct();
     }
     
-    // Get all tagihan with usage and customer info
-    public function get_all_tagihan() {
+    // Get all tagihan with usage and customer info, support search & sort
+    public function get_all_tagihan($search = '', $sort = '', $order = '') {
         $this->db->select('tagihan.*, penggunaan.bulan, penggunaan.tahun, penggunaan.meter_awal, penggunaan.meter_akhir, pelanggan.nama as nama_pelanggan, pelanggan.alamat');
         $this->db->from('tagihan');
         $this->db->join('penggunaan', 'penggunaan.penggunaan_id = tagihan.penggunaan_id');
         $this->db->join('pelanggan', 'pelanggan.pelanggan_id = penggunaan.pelanggan_id');
-        $this->db->order_by('tagihan.created_at DESC');
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like('pelanggan.nama', $search);
+            $this->db->or_like('pelanggan.alamat', $search);
+            $this->db->or_like('tagihan.status', $search);
+            $this->db->or_like('penggunaan.bulan', $search);
+            $this->db->or_like('penggunaan.tahun', $search);
+            $this->db->group_end();
+        }
+        $allowed_sort = ['nama_pelanggan', 'bulan', 'tahun', 'total_tagihan', 'status'];
+        if (in_array($sort, $allowed_sort)) {
+            $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+            $this->db->order_by($sort, $order);
+        } else {
+            $this->db->order_by('tagihan.created_at DESC');
+        }
         return $this->db->get()->result();
     }
     
@@ -118,5 +133,29 @@ class Tagihan_model extends CI_Model {
         $this->db->join('level', 'level.level_id = pelanggan.level_id');
         $this->db->where('penggunaan.penggunaan_id', $penggunaan_id);
         return $this->db->get()->row();
+    }
+
+    // Get tagihan by pelanggan ID, support search & sort
+    public function get_tagihan_by_pelanggan_search_sort($pelanggan_id, $search = '', $sort = '', $order = '') {
+        $this->db->select('tagihan.*, penggunaan.bulan, penggunaan.tahun, penggunaan.meter_awal, penggunaan.meter_akhir');
+        $this->db->from('tagihan');
+        $this->db->join('penggunaan', 'penggunaan.penggunaan_id = tagihan.penggunaan_id');
+        $this->db->where('penggunaan.pelanggan_id', $pelanggan_id);
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like('tagihan.status', $search);
+            $this->db->or_like('penggunaan.bulan', $search);
+            $this->db->or_like('penggunaan.tahun', $search);
+            $this->db->or_like('tagihan.total_tagihan', $search);
+            $this->db->group_end();
+        }
+        $allowed_sort = ['bulan', 'tahun', 'total_tagihan', 'status'];
+        if (in_array($sort, $allowed_sort)) {
+            $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+            $this->db->order_by($sort, $order);
+        } else {
+            $this->db->order_by('tagihan.created_at DESC');
+        }
+        return $this->db->get()->result();
     }
 } 

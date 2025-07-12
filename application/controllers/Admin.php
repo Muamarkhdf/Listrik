@@ -51,7 +51,13 @@ class Admin extends CI_Controller {
     public function pelanggan() {
         $data['title'] = 'Manajemen Pelanggan - Aplikasi Pembayaran Listrik';
         $data['user'] = $this->session->userdata();
-        $data['pelanggan'] = $this->Pelanggan_model->get_all_pelanggan();
+        $search = $this->input->get('search', TRUE);
+        $sort = $this->input->get('sort', TRUE);
+        $order = $this->input->get('order', TRUE);
+        $data['search'] = $search;
+        $data['sort'] = $sort;
+        $data['order'] = $order;
+        $data['pelanggan'] = $this->Pelanggan_model->get_all_pelanggan($search, $sort, $order);
         
         $this->load->view('admin/header', $data);
         $this->load->view('admin/pelanggan/index', $data);
@@ -138,7 +144,13 @@ class Admin extends CI_Controller {
     public function penggunaan() {
         $data['title'] = 'Manajemen Penggunaan - Aplikasi Pembayaran Listrik';
         $data['user'] = $this->session->userdata();
-        $data['penggunaan'] = $this->Penggunaan_model->get_all_penggunaan();
+        $search = $this->input->get('search', TRUE);
+        $sort = $this->input->get('sort', TRUE);
+        $order = $this->input->get('order', TRUE);
+        $data['search'] = $search;
+        $data['sort'] = $sort;
+        $data['order'] = $order;
+        $data['penggunaan'] = $this->Penggunaan_model->get_all_penggunaan($search, $sort, $order);
         
         $this->load->view('admin/header', $data);
         $this->load->view('admin/penggunaan/index', $data);
@@ -243,7 +255,13 @@ class Admin extends CI_Controller {
     public function tagihan() {
         $data['title'] = 'Manajemen Tagihan - Aplikasi Pembayaran Listrik';
         $data['user'] = $this->session->userdata();
-        $data['tagihan'] = $this->Tagihan_model->get_all_tagihan();
+        $search = $this->input->get('search', TRUE);
+        $sort = $this->input->get('sort', TRUE);
+        $order = $this->input->get('order', TRUE);
+        $data['search'] = $search;
+        $data['sort'] = $sort;
+        $data['order'] = $order;
+        $data['tagihan'] = $this->Tagihan_model->get_all_tagihan($search, $sort, $order);
         
         $this->load->view('admin/header', $data);
         $this->load->view('admin/tagihan/index', $data);

@@ -44,16 +44,19 @@ class Pelanggan extends CI_Controller {
     public function penggunaan() {
         $data['title'] = 'Data Penggunaan Listrik - Aplikasi Pembayaran Listrik';
         $data['user'] = $this->session->userdata();
-        
+        $search = $this->input->get('search', TRUE);
+        $sort = $this->input->get('sort', TRUE);
+        $order = $this->input->get('order', TRUE);
+        $data['search'] = $search;
+        $data['sort'] = $sort;
+        $data['order'] = $order;
         // Get pelanggan data
         $pelanggan = $this->Pelanggan_model->get_pelanggan_by_user_id($this->session->userdata('user_id'));
-        
         if ($pelanggan) {
-            $data['penggunaan'] = $this->Penggunaan_model->get_penggunaan_by_pelanggan($pelanggan->pelanggan_id);
+            $data['penggunaan'] = $this->Penggunaan_model->get_penggunaan_by_pelanggan_search_sort($pelanggan->pelanggan_id, $search, $sort, $order);
         } else {
             $data['penggunaan'] = array();
         }
-        
         $this->load->view('pelanggan/header', $data);
         $this->load->view('pelanggan/penggunaan/index', $data);
         $this->load->view('pelanggan/footer');
@@ -184,16 +187,19 @@ class Pelanggan extends CI_Controller {
     public function tagihan() {
         $data['title'] = 'Data Tagihan Listrik - Aplikasi Pembayaran Listrik';
         $data['user'] = $this->session->userdata();
-        
+        $search = $this->input->get('search', TRUE);
+        $sort = $this->input->get('sort', TRUE);
+        $order = $this->input->get('order', TRUE);
+        $data['search'] = $search;
+        $data['sort'] = $sort;
+        $data['order'] = $order;
         // Get pelanggan data
         $pelanggan = $this->Pelanggan_model->get_pelanggan_by_user_id($this->session->userdata('user_id'));
-        
         if ($pelanggan) {
-            $data['tagihan'] = $this->Tagihan_model->get_tagihan_by_pelanggan($pelanggan->pelanggan_id);
+            $data['tagihan'] = $this->Tagihan_model->get_tagihan_by_pelanggan_search_sort($pelanggan->pelanggan_id, $search, $sort, $order);
         } else {
             $data['tagihan'] = array();
         }
-        
         $this->load->view('pelanggan/header', $data);
         $this->load->view('pelanggan/tagihan/index', $data);
         $this->load->view('pelanggan/footer');
